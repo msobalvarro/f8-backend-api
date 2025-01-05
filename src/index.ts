@@ -20,7 +20,7 @@ connect(DB).then(() => {
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)
-  app.use('/file', routerFile)
+  app.use('/images', routerFile)
   
   const server = http.createServer(app)
   const io = initializeSocket(server)

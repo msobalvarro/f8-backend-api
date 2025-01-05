@@ -54,7 +54,7 @@ routerFile.get('/:imageName', async (req: Request, res: Response) => {
   try {
     const fs = await import('fs/promises')
     await fs.access(imagePath)
-    res.sendFile(imagePath)
+    res.header('Content-Type', 'image/jpeg').sendFile(imagePath)
   } catch (error) {
     res.status(500).send(String(error))
   }
