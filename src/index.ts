@@ -5,6 +5,7 @@ import { connect } from 'mongoose'
 import { DB, PORT } from './utils/constants'
 import { initializeSocket } from './socket'
 import { routerMessage } from './controllers/message'
+import { routerPreference } from './controllers/preferences'
 const app = express()
 
 // Middleware para analizar JSON
@@ -13,6 +14,7 @@ app.use(express.json())
 connect(DB).then(() => {
   app.use('/login', routerLogin)
   app.use('/messages', routerMessage)
+  app.use('/preferences', routerPreference)
   
   const server = http.createServer(app)
   const io = initializeSocket(server)

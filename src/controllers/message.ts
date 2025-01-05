@@ -31,7 +31,6 @@ routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
 
     res.status(200).send(messages)
   } catch (error) {
-    console.log(error)
     res.status(500).send(String(error))
   }
 })
@@ -50,7 +49,6 @@ routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
 
     res.status(200).send(messageUpdated)
   } catch (error) {
-    console.log(error)
     res.status(500).send(String(error))
   }
 })
@@ -58,12 +56,9 @@ routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
 routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { _id }: ArchiveMessageProp = req.body
-
     const deleted = await messageModel.deleteOne({ _id })
-
     res.status(200).send(deleted)
   } catch (error) {
-    console.log(error)
     res.status(500).send(String(error))
   }
 })

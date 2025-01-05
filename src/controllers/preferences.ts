@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { preferencesModel } from '@/models/preferences'
-import {
+import type {
   DeletePreferencesProp,
   PreferencesPropierties,
   UpdatePreferencesProp
@@ -10,54 +9,54 @@ import {
   deletePreferenceValidation,
   updatePreferenceValidation
 } from '@/utils/validations'
-import { verifyHeaderToken } from '@/utils/validateToken'
-import { validateErrorResponse } from '@/utils/responseError'
 
-export async function GET() {
+import { Router, type Request, type Response } from 'express'
+import { authMiddleware } from '@/middleware'
+
+export const routerPreference = Router()
+
+routerPreference.get('/', async (req: Request, res: Response) => {
   try {
     const data = await preferencesModel.find()
-    return NextResponse.json(data, { status: 200 })
+    res.status(200).send(data)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function POST(request: NextRequest) {
+routerPreference.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: PreferencesPropierties = await request.json()
+    const params: PreferencesPropierties = req.body
     const data = createPreferenceValidation.parse(params)
 
     const newPreference = await preferencesModel.create(data)
-    return NextResponse.json(newPreference, { status: 200 })
+    res.status(200).send(newPreference)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function DELETE(request: NextRequest) {
+routerPreference.delete('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: DeletePreferencesProp = await request.json()
+    const params: DeletePreferencesProp = req.body
     const data = deletePreferenceValidation.parse(params)
 
-    const newPreference = await preferencesModel.deleteOne({ _id: data._id })
-    return NextResponse.json(newPreference, { status: 200 })
+    const preferenceDeleted = await preferencesModel.deleteOne({ _id: data._id })
+    res.status(200).send(preferenceDeleted)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-
-export async function PUT(request: NextRequest) {
+routerPreference.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: UpdatePreferencesProp = await request.json()
+    const params: UpdatePreferencesProp = req.body
     const data = updatePreferenceValidation.parse(params)
 
     const preferenceUpdated = await preferencesModel.updateOne({ _id: data._id }, { key: data.key, value: data.value })
-    return NextResponse.json(preferenceUpdated, { status: 200 })
+    res.status(200).send(preferenceUpdated)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
+

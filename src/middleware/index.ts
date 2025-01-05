@@ -5,7 +5,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   try {
     const token = req.headers['authorization']
     if (!token) {
-      throw new Error('Token git branch -M mainis required')
+      throw new Error('token required')
     }
 
     const bearer = token.split(' ')[1]
