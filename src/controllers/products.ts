@@ -3,69 +3,63 @@ import type {
   ProductsPropierties,
   UpdateProductProps
 } from '@/utils/interfaces'
-import { NextRequest, NextResponse } from 'next/server'
 import { Types } from 'mongoose'
 import { createAndUpdateProductValidation } from '@/utils/validations'
-import { validateErrorResponse } from '@/utils/responseError'
-import { verifyHeaderToken } from '@/utils/validateToken'
+import { Router, type Response, type Request } from 'express'
+import { authMiddleware } from '@/middleware'
 
-export async function GET(request: NextRequest) {
+export const routerProducts = Router()
+
+routerProducts.get('/', async (req: Request, res: Response) => {
   try {
-    const id = request.nextUrl.searchParams.get('id')
-    const onlyPinned = request.nextUrl.searchParams.get('pinned')
+    const { id, pinned: onlyPinned } = req.query
 
     if (id) {
       const product: ProductsPropierties | null = await productModel.findById(id)
-      return NextResponse.json(product, { status: 200 })
+      res.status(200).send(product)
+      return
     }
 
     if (Boolean(onlyPinned)) {
       const products: ProductsPropierties[] = await productModel.find({ pinned: true }).sort({ createdAt: -1 })
-      return NextResponse.json(products, { status: 200 })
+      res.status(200).send(products)
+      return
     }
 
     const products: ProductsPropierties[] = await productModel.find().sort({ createdAt: -1 })
-    return NextResponse.json(products, { status: 200 })
+    res.status(200).send(products)
   } catch (error) {
-    console.log(error)
-    
-    return NextResponse.json({ error }, { status: 500 })
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function POST(request: NextRequest) {
+routerProducts.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: ProductsPropierties = await request.json()
+    const params: ProductsPropierties = req.body
     createAndUpdateProductValidation.parse(params)
 
     const newProduct = await productModel.create(params)
-    return NextResponse.json(newProduct)
+    res.status(200).send(newProduct)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function DELETE(request: NextRequest) {
+routerProducts.delete('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
+    const { id } = req.body
 
-    if (!id || !Types.ObjectId.isValid(id)) throw new Error('id is not a valid')
-
-
+    if (!id || !Types.ObjectId.isValid(String(id))) throw new Error('id is not a valid')
     const deleted = await productModel.deleteOne({ _id: id })
-    return NextResponse.json(deleted)
+    res.status(200).send(deleted)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function PUT(request: NextRequest) {
+routerProducts.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: UpdateProductProps = await request.json()
+    const params: UpdateProductProps = req.body
     const data = createAndUpdateProductValidation.parse(params)
     if (!Types.ObjectId.isValid(params.id)) throw new Error('id is not a valid')
 
@@ -80,8 +74,8 @@ export async function PUT(request: NextRequest) {
         images: data.images,
       }
     )
-    return NextResponse.json(productUpdated)
+    res.status(200).send(productUpdated)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
