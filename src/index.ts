@@ -8,6 +8,7 @@ import { routerMessage } from './controllers/message'
 import { routerPreference } from './controllers/preferences'
 import { routerProducts } from './controllers/products'
 import { routerService } from './controllers/services'
+import { routerFile } from './controllers/files'
 const app = express()
 
 // Middleware para analizar JSON
@@ -19,6 +20,7 @@ connect(DB).then(() => {
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)
+  app.use('/file', routerFile)
   
   const server = http.createServer(app)
   const io = initializeSocket(server)
