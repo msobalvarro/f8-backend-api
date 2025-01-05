@@ -1,25 +1,25 @@
+import type { UsersPropierties } from '@/utils/interfaces'
+import { authMiddleware } from '@/middleware'
 import { usersModel } from '@/models/user'
-import { UsersPropierties } from '@/utils/interfaces'
-import { validateErrorResponse } from '@/utils/responseError'
-import { newSha256, verifyHeaderToken } from '@/utils/validateToken'
+import { createHash } from '@/utils/jwt'
 import { createUserValidation } from '@/utils/validations'
-import { NextRequest, NextResponse } from 'next/server'
+import { Router, type Request, type Response } from 'express'
 
-export async function POST(request: NextRequest) {
+const routerUser = Router()
+
+routerUser.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-
-    const params: UsersPropierties = await request.json()
+    const params: UsersPropierties = req.body
     const { name, username, password: pwd } = createUserValidation.parse(params)
 
-    const password = await newSha256(pwd)
+    const password = await createHash(pwd)
     const newUser = await usersModel.create({
       name,
       username,
       password,
     })
-    return NextResponse.json(newUser)
+    res.status(200).send(newUser)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
