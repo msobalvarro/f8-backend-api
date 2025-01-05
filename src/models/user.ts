@@ -1,5 +1,5 @@
-import { UsersPropierties } from '@/utils/interfaces';
-import { model, models, Schema } from 'mongoose';
+import type { UsersPropierties } from '@/utils/interfaces'
+import { model, Schema } from 'mongoose'
 
 const user = new Schema<UsersPropierties>(
   {
@@ -13,5 +13,5 @@ const user = new Schema<UsersPropierties>(
   }
 )
 
-export const usersModel =  models?.user|| model('user', user)
+export const usersModel = model('user', user)
 

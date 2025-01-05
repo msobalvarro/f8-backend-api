@@ -1,5 +1,5 @@
 import { productModel } from '@/models/products'
-import {
+import type {
   ProductsPropierties,
   UpdateProductProps
 } from '@/utils/interfaces'

@@ -1,33 +1,31 @@
+import type { Request, Response } from 'express'
+import { Router } from 'express'
 import { createReadStream } from 'fs'
-import { NextRequest, NextResponse } from 'next/server'
 import { resolve } from 'path'
-import { ReadableStream } from 'web-streams-polyfill/ponyfill'
+import { promises as fsPromises } from 'fs'
+import mime from 'mime-types'
 
-export async function GET(request: NextRequest) {
-  // console.log()
-  const imageName = request.nextUrl.pathname.split('/')[3]
+const app = Router()
 
+app.get('/:imageName', async (req: Request, res: Response) => {
+  const { imageName } = req.params
   const imagePath = resolve(`${process.env.PUBLIC_FOLDER}/${imageName}`)
+
   try {
-    const fs = await import('fs/promises')
-    await fs.access(imagePath)
+    // Verifica si el archivo existe
+    await fsPromises.access(imagePath)
+
+    // Obtén el tipo MIME según la extensión del archivo
+    const mimeType = mime.lookup(imagePath)
+    if (!mimeType) {
+      return res.status(400).json({ error: 'Tipo de archivo no soportado.' })
+    }
 
     const stream = createReadStream(imagePath)
-
-    const readableStream = new ReadableStream({
-      start(controller) {
-        stream.on('data', chunk => controller.enqueue(chunk))
-        stream.on('end', () => controller.close())
-        stream.on('error', err => controller.error(err))
-      }
-    })
-
-    return new Response(readableStream, {
-      headers: {
-        'Content-Type': 'image/jpeg', // Cambia según el tipo de imagen
-      },
-    })
+    res.setHeader('Content-Type', mimeType)
+    stream.pipe(res)
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 })
+    console.error(error)
+    res.status(404).json({ error: 'Imagen no encontrada.' })
   }
-}
+})
