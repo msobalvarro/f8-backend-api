@@ -63,7 +63,6 @@ routerProducts.put('/', authMiddleware, async (req: Request, res: Response) => {
     const data = createAndUpdateProductValidation.parse(params)
     if (!Types.ObjectId.isValid(params.id)) throw new Error('id is not a valid')
 
-
     const productUpdated = await productModel.updateOne(
       { _id: params.id },
       {

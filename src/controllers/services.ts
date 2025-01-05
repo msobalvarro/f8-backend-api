@@ -1,76 +1,73 @@
-import {
+import type {
   NewAndUpdateServiceProps,
+  ServiceResponse,
   ServicesPropierties,
 } from '@/utils/interfaces'
-import { NextRequest, NextResponse } from 'next/server'
 import { Types } from 'mongoose'
 import { createAndUpdateServiceValidation } from '@/utils/validations'
-import { validateErrorResponse } from '@/utils/responseError'
 import { servicesModel } from '@/models/service'
-import { verifyHeaderToken } from '@/utils/validateToken'
+import { Router, type Request, type Response } from 'express'
+import { authMiddleware } from '@/middleware'
 
-export async function GET(request: NextRequest) {
+export const routerService = Router()
+
+routerService.get('/', async (req: Request, res: Response) => {
   try {
-    const id = request.nextUrl.searchParams.get('id')
-    const onlyPinned = request.nextUrl.searchParams.get('pinned')
-
-    if (Boolean(onlyPinned)) {
-      const services: ServicesPropierties[] = await servicesModel.find({ pinned: true }).sort({ createdAt: -1 })
-      return NextResponse.json(services, { status: 200 })
-    }
+    const { id, pinned: onlyPinned } = req.query
 
     if (id) {
-      const product: NewAndUpdateServiceProps | null = await servicesModel.findById(id)
-      return NextResponse.json(product, { status: 200 })
+      const product: ServiceResponse | null = await servicesModel.findById(id)
+      res.status(200).send(product)
+      return
     }
 
-    const products: NewAndUpdateServiceProps[] = await servicesModel.find().sort({ createdAt: -1 })
-    return NextResponse.json(products, { status: 200 })
+    if (Boolean(onlyPinned == 'true')) {
+      const services: ServiceResponse[] = await servicesModel.find({ pinned: true }).sort({ createdAt: -1 })
+      res.status(200).send(services)
+      return
+    }
+
+    const services: ServiceResponse[] = await servicesModel.find().sort({ createdAt: -1 })
+    res.status(200).send(services)
   } catch (error) {
-    console.log(error)
-
-    return NextResponse.json({ error }, { status: 500 })
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function POST(request: NextRequest) {
+routerService.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: ServicesPropierties = await request.json()
+    const params: ServicesPropierties = req.body
     createAndUpdateServiceValidation.parse(params)
 
     const newService = await servicesModel.create(params)
-    return NextResponse.json(newService)
+    res.status(200).send(newService)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function DELETE(request: NextRequest) {
+routerService.delete('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-
-    if (!id || !Types.ObjectId.isValid(id)) throw new Error('id is not a valid')
-
+    const { id } = req.body
+    if (!id || !Types.ObjectId.isValid(String(id))) throw new Error('id is not a valid')
 
     const deleted = await servicesModel.deleteOne({ _id: id })
-    return NextResponse.json(deleted)
+    res.status(200).send(deleted)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function PUT(request: NextRequest) {
+routerService.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const params: NewAndUpdateServiceProps = await request.json()
+    const params: NewAndUpdateServiceProps = req.body
     if (!Types.ObjectId.isValid(params.id)) throw new Error('id is not a valid')
+
     createAndUpdateServiceValidation.parse(params)
     const serviceUpdated = await servicesModel.updateOne({ _id: params.id }, params)
-    return NextResponse.json(serviceUpdated)
+    res.status(200).send(serviceUpdated)
   } catch (error) {
-    return validateErrorResponse(error)
+    res.status(500).send(String(error))
   }
-}
+})
+

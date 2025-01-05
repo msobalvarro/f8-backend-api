@@ -1,3 +1,5 @@
+import {Types} from 'mongoose'
+
 export interface FormContactState {
   company: string
   fullName: string
@@ -67,20 +69,20 @@ export interface ArchiveMessageProp {
   _id: string
 }
 
-export interface ServicesPropierties { 
+export interface ServicesPropierties {
   title: string
-  description: string  
+  description: string
   images: string[]
   archived?: boolean
   pinned?: boolean
   createdAt?: string
 }
 
-export interface NewAndUpdateServiceProps extends ServicesPropierties { 
+export interface NewAndUpdateServiceProps extends ServicesPropierties {
   id: string
 }
 
-export interface ServiceResponse extends ServicesPropierties { 
-  _id: string
+export interface ServiceResponse extends ServicesPropierties {
+  _id: Types.ObjectId
 }
 
