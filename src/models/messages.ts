@@ -1,5 +1,5 @@
-import { MessagesPropierties } from '@/utils/interfaces'
-import { model, models, Schema } from 'mongoose'
+import type { MessagesPropierties } from '@/utils/interfaces'
+import { model, Schema } from 'mongoose'
 
 const message = new Schema<MessagesPropierties>(
   {
@@ -16,4 +16,4 @@ const message = new Schema<MessagesPropierties>(
   }
 )
 
-export const messageModel = models?.messages || model('messages', message)
+export const messageModel = model('messages', message)

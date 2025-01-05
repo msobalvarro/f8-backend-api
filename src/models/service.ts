@@ -1,5 +1,5 @@
-import { ServicesPropierties } from '@/utils/interfaces'
-import { models, Schema, model } from 'mongoose'
+import type { ServicesPropierties } from '@/utils/interfaces'
+import { Schema, model } from 'mongoose'
 
 export const services = new Schema<ServicesPropierties>(
   {
@@ -15,4 +15,4 @@ export const services = new Schema<ServicesPropierties>(
   },
 )
 
-export const servicesModel = models?.services || model('services', services)
+export const servicesModel = model('services', services)

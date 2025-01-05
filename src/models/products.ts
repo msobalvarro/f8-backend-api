@@ -1,5 +1,5 @@
-import { model, models, Schema } from 'mongoose'
-import { ProductsPropierties } from '@/utils/interfaces'
+import { model, Schema } from 'mongoose'
+import type { ProductsPropierties } from '@/utils/interfaces'
 
 const product = new Schema<ProductsPropierties>(
   {
@@ -15,4 +15,4 @@ const product = new Schema<ProductsPropierties>(
   }
 )
 
-export const productModel = models?.products || model('products', product)
+export const productModel = model('products', product)

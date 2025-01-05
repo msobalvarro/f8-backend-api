@@ -1,45 +1,45 @@
 
-import { NextRequest, NextResponse } from 'next/server'
-import { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces'
-import { createMessage } from '@/utils/validations'
+import { Router, type Request, type Response } from 'express'
+import type { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces'
 import { messageModel } from '@/models/messages'
-import { getSocket } from '@/utils/socket'
-import { verifyHeaderToken } from '@/utils/validateToken'
-import { validateErrorResponse } from '@/utils/responseError'
+import { getSocket } from '@/socket'
+import { authMiddleware } from '@/middleware'
 
-export async function POST(request: NextRequest) {
+export const routerMessage = Router()
+
+routerMessage.post('/', async (req: Request, res: Response) => {
   try {
     // await verifyHeaderToken(request)
-    const params: MessagesPropierties = await request.json()
-    const data = createMessage.parse(params)
-
-    const newMessage = await messageModel.create(data)
+    const params: MessagesPropierties = req.body
+    const newMessage = await messageModel.create(params)
 
     getSocket().emit('newMessage', newMessage)
 
-    return NextResponse.json(newMessage, { status: 200 })
+    res.status(200).send(newMessage)
   } catch (error) {
-    return validateErrorResponse(error)
+    console.log(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function GET(request: NextRequest) {
+routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
+    const archived = Boolean(req.query.archived)
+    console.log(archived)
+    
+    const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
 
-    const archived = request.nextUrl.searchParams.get('archived') === 'true'
-    const data = await messageModel.find({ archived }).sort({ createdAt: -1 })
-    return NextResponse.json(data, { status: 200 })
+    res.status(200).send(messages)
   } catch (error) {
-    return validateErrorResponse(error)
+    console.log(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function PUT(request: NextRequest) {
+
+routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-
-    const { _id }: ArchiveMessageProp = await request.json()
+    const { _id }: ArchiveMessageProp = req.body
 
     const message = await messageModel.findById(_id)
     if (!message) throw new Error('Could not find a message')
@@ -48,22 +48,24 @@ export async function PUT(request: NextRequest) {
       archived: !Boolean(message.archived)
     })
 
-    return NextResponse.json(messageUpdated, { status: 200 })
+    res.status(200).send(messageUpdated)
   } catch (error) {
-    return validateErrorResponse(error)
+    console.log(error)
+    res.status(500).send(String(error))
   }
-}
+})
 
-export async function DELETE(request: NextRequest) {
+routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    await verifyHeaderToken(request)
-    const { _id }: ArchiveMessageProp = await request.json()
+    const { _id }: ArchiveMessageProp = req.body
 
     const deleted = await messageModel.deleteOne({ _id })
 
-    return NextResponse.json(deleted, { status: 200 })
+    res.status(200).send(deleted)
   } catch (error) {
-    return validateErrorResponse(error)
+    console.log(error)
+    res.status(500).send(String(error))
   }
-}
+})
+
 

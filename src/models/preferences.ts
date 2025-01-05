@@ -1,5 +1,5 @@
-import { model, models, Schema } from 'mongoose'
-import { PreferencesPropierties } from '@/utils/interfaces'
+import { model, Schema } from 'mongoose'
+import type { PreferencesPropierties } from '@/utils/interfaces'
 
 const preferences = new Schema<PreferencesPropierties>(
   {
@@ -12,4 +12,4 @@ const preferences = new Schema<PreferencesPropierties>(
   }
 )
 
-export const preferencesModel  = models?.preferences || model('preferences', preferences)
+export const preferencesModel = model('preferences', preferences)
