@@ -3,7 +3,7 @@
     // Enable latest features
     "lib": ["es2020", "DOM"],
     "module": "es2020",
-    "target": "esnext",
+    "target": "ESNext",
     "noImplicitAny": true,
     "sourceMap": true,
     "moduleDetection": "force",
@@ -20,6 +20,11 @@
     "strict": false,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "alwaysStrict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
 
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
