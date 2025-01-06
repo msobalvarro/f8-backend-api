@@ -26,6 +26,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "outDir": "./public",
+    "outDir": "./src",
   }
 }
