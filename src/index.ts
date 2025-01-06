@@ -17,7 +17,6 @@ app.use(express.json())
 
 connect(DB).then(() => {
   app.use(cors({ origin: '*' }))
-
   app.use('/login', routerLogin)
   app.use('/messages', routerMessage)
   app.use('/preferences', routerPreference)
