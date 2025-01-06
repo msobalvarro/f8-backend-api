@@ -47,7 +47,7 @@ routerProducts.post('/', authMiddleware, async (req: Request, res: Response) => 
 
 routerProducts.delete('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const { id } = req.body
+    const { id } = req.query
 
     if (!id || !Types.ObjectId.isValid(String(id))) throw new Error('id is not a valid')
     const deleted = await productModel.deleteOne({ _id: id })

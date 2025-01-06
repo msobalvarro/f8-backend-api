@@ -1,5 +1,6 @@
 import express from 'express'
 import http from 'http'
+import cors from 'cors'
 import { routerLogin } from './controllers/login'
 import { connect } from 'mongoose'
 import { DB, PORT } from './utils/constants'
@@ -15,22 +16,24 @@ const app = express()
 app.use(express.json())
 
 connect(DB).then(() => {
+  app.use(cors({ origin: '*' }))
+
   app.use('/login', routerLogin)
   app.use('/messages', routerMessage)
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)
   app.use('/images', routerFile)
-  
+
   const server = http.createServer(app)
   const io = initializeSocket(server)
 
-  io.on('connection', (client) => { 
+  io.on('connection', (client) => {
     console.log('Client connected ', client.id)
   })
-  
+
   // Inicia el servidor
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`server running on PORT:${PORT}`)
   })
 })
