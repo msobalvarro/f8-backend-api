@@ -1,6 +1,8 @@
 import express from 'express'
-import * as http from 'http'
+import http from 'http'
 import cors from 'cors'
+import { fileURLToPath } from 'url'
+import path, { dirname } from 'path'
 import { routerLogin } from './src/controllers/login'
 import { connect } from 'mongoose'
 import { DB, PORT } from './src/utils/constants'
@@ -12,12 +14,18 @@ import { routerService } from './src/controllers/services'
 import { routerFile } from './src/controllers/files'
 
 const app = express()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 // Middleware para analizar JSON
 app.use(express.json())
 
 connect(DB).then(() => {
   // app.use('/message', apiLimiter)
+  app.use(express.static(path.join(__dirname, '../f8-building')))
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../f8-building', 'index.html'))
+  })
 
   app.use(cors({ origin: '*' }))
   app.use('/login', routerLogin)
