@@ -7,9 +7,7 @@ import { apiLimiter, authMiddleware } from '@/middleware'
 
 export const routerMessage = Router()
 
-routerMessage.use(apiLimiter)
-
-routerMessage.post('/', async (req: Request, res: Response) => {
+routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
   try {
     // await verifyHeaderToken(request)
     const params: MessagesPropierties = req.body
@@ -28,7 +26,7 @@ routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const archived = Boolean(req.query.archived)
     console.log(archived)
-    
+
     const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
 
     res.status(200).send(messages)
