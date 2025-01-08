@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { verifyToken } from '@/utils/jwt'
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -16,3 +17,11 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     res.status(401).send(`${error}`)
   }
 }
+
+export const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // Límite de 100 peticiones por IP en el tiempo definido
+  message: 'Demasiadas solicitudes desde esta IP, por favor intenta de nuevo más tarde.',
+  standardHeaders: true, // Enviar información de límite en los encabezados `RateLimit-*`
+  legacyHeaders: false, // Desactivar los encabezados `X-RateLimit-*`
+})

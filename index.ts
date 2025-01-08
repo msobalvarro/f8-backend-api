@@ -10,15 +10,18 @@ import { routerPreference } from './src/controllers/preferences'
 import { routerProducts } from './src/controllers/products'
 import { routerService } from './src/controllers/services'
 import { routerFile } from './src/controllers/files'
+
 const app = express()
 
 // Middleware para analizar JSON
 app.use(express.json())
 
 connect(DB).then(() => {
+  // app.use('/message', apiLimiter)
+
   app.use(cors({ origin: '*' }))
   app.use('/login', routerLogin)
-  app.use('/messages', routerMessage)
+  app.use('/message', routerMessage)
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)

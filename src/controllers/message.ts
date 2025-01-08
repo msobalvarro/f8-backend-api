@@ -3,9 +3,11 @@ import { Router, type Request, type Response } from 'express'
 import type { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
-import { authMiddleware } from '@/middleware'
+import { apiLimiter, authMiddleware } from '@/middleware'
 
 export const routerMessage = Router()
+
+routerMessage.use(apiLimiter)
 
 routerMessage.post('/', async (req: Request, res: Response) => {
   try {
