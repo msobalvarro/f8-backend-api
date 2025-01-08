@@ -2,6 +2,7 @@ import { Server as HTTPServer } from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 
 declare global {
+  // eslint-disable-next-line
   var _io: SocketIOServer | undefined
 }
 

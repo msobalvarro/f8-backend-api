@@ -3,11 +3,11 @@ import { Router, type Request, type Response } from 'express'
 import type { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
-import { authMiddleware } from '@/middleware'
+import { apiLimiter, authMiddleware } from '@/middleware'
 
 export const routerMessage = Router()
 
-routerMessage.post('/', async (req: Request, res: Response) => {
+routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
   try {
     // await verifyHeaderToken(request)
     const params: MessagesPropierties = req.body
@@ -26,7 +26,7 @@ routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const archived = Boolean(req.query.archived)
     console.log(archived)
-    
+
     const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
 
     res.status(200).send(messages)
