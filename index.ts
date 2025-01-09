@@ -21,12 +21,6 @@ const __dirname = dirname(__filename)
 app.use(express.json())
 
 connect(DB).then(() => {
-  // app.use('/message', apiLimiter)
-  app.use(express.static(path.join(__dirname, '../f8-building')))
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../f8-building', 'index.html'))
-  })
-
   app.use(cors({ origin: '*' }))
   app.use('/login', routerLogin)
   app.use('/message', routerMessage)
