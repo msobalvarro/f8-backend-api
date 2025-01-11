@@ -24,8 +24,7 @@ routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
 
 routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const archived = Boolean(req.query.archived)
-    console.log(archived)
+    const archived = Boolean(req.query.archived === 'true')
 
     const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
 
