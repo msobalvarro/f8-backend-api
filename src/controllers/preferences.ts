@@ -12,6 +12,7 @@ import {
 
 import { Router, type Request, type Response } from 'express'
 import { authMiddleware } from '@/middleware'
+import { Types } from 'mongoose'
 
 export const routerPreference = Router()
 
@@ -38,10 +39,10 @@ routerPreference.post('/', authMiddleware, async (req: Request, res: Response) =
 
 routerPreference.delete('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const params: DeletePreferencesProp = req.body
-    const data = deletePreferenceValidation.parse(params)
+    const { id } = req.query
+    if (!id || !Types.ObjectId.isValid(String(id))) throw new Error('id is not a valid')
 
-    const preferenceDeleted = await preferencesModel.deleteOne({ _id: data._id })
+    const preferenceDeleted = await preferencesModel.deleteOne({ _id: id })
     res.status(200).send(preferenceDeleted)
   } catch (error) {
     res.status(500).send(String(error))

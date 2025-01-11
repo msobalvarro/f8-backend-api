@@ -11,7 +11,7 @@ import { routerMessage } from './src/controllers/message'
 import { routerPreference } from './src/controllers/preferences'
 import { routerProducts } from './src/controllers/products'
 import { routerService } from './src/controllers/services'
-import { routerFile } from './src/controllers/files'
+import { routerImage } from './src/controllers/files'
 
 const app = express()
 const __filename = fileURLToPath(import.meta.url)
@@ -27,7 +27,7 @@ connect(DB).then(() => {
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)
-  app.use('/images', routerFile)
+  app.use('/images', routerImage)
 
   const server = http.createServer(app)
   const io = initializeSocket(server)

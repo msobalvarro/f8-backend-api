@@ -9,7 +9,7 @@ import { authMiddleware } from '@/middleware'
 
 dotenv.config()
 
-export const routerFile = Router()
+export const routerImage = Router()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -35,7 +35,7 @@ const upload = multer({
   limits: { fieldSize: 2 * 1024 * 1024 }
 })
 
-routerFile.post('/', authMiddleware, upload.single('file'), (req: Request, res: Response) => {
+routerImage.post('/', authMiddleware, upload.single('file'), (req: Request, res: Response) => {
   try {
     if (!req.file) {
       res.status(400).send('No se ha subido ningún archivo.')
@@ -47,7 +47,7 @@ routerFile.post('/', authMiddleware, upload.single('file'), (req: Request, res: 
   }
 })
 
-routerFile.get('/:imageName', async (req: Request, res: Response) => {
+routerImage.get('/:imageName', async (req: Request, res: Response) => {
 
   const imagePath = resolve(`${uploadDir}/${req.params.imageName}`)
 
