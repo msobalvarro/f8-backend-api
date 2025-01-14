@@ -4,6 +4,7 @@ import { usersModel } from '@/models/user'
 import { createHash } from '@/utils/jwt'
 import { createUserValidation, deleteUser, updateUserPassword } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
+import { Types } from 'mongoose'
 
 export const routerUser = Router()
 
@@ -47,13 +48,14 @@ routerUser.put('/', authMiddleware, async (req: Request, res: Response) => {
 
 routerUser.delete('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const props = deleteUser.parse(req.body)
+    const { id } = req.query
+    if (!id || !Types.ObjectId.isValid(String(id))) throw new Error('id is not a valid')
 
-    if (req.user?._id === props.id) {
+    if (req.user?._id === id) {
       throw new Error(`Can not delete this user`)
     }
 
-    const userDeleted = await usersModel.deleteOne({ _id: props.id })
+    const userDeleted = await usersModel.deleteOne({ _id: id })
     res.send(userDeleted)
   } catch (error) {
     res.status(500).send(String(error))
