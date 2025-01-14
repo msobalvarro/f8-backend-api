@@ -1,6 +1,5 @@
-
-import { Router, type Request, type Response } from 'express'
 import type { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces'
+import { Router, type Request, type Response } from 'express'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
 import { apiLimiter, authMiddleware } from '@/middleware'

@@ -69,3 +69,11 @@ export const createAndUpdateServiceValidation = z.object({
   ),
   pinned: z.boolean({ message: 'pinned is required' }),
 })
+
+export const updateUserPassword = z.object({
+  password: z.string({ message: 'password is required' }),
+})
+
+export const deleteUser = z.object({
+  id: z.string({ message: 'id is required' }),
+})

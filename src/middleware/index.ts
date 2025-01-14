@@ -1,6 +1,13 @@
 import type { NextFunction, Request, Response } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { verifyToken } from '@/utils/jwt'
+import type { JwtPayload } from 'jsonwebtoken'
+
+declare module 'express-serve-static-core' {
+  interface Request extends JwtPayload {
+    _id: string
+  }
+}
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -11,7 +18,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     const bearer = token.split(' ')[1]
     const data = verifyToken(bearer)
-    req.cookies = data
+    req.user = data
     next()
   } catch (error) {
     res.status(401).send(`${error}`)

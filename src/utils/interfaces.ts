@@ -86,3 +86,7 @@ export interface ServiceResponse extends ServicesPropierties {
   _id: Types.ObjectId
 }
 
+export interface TokenResponse {
+  _id: string
+}
+
