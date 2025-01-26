@@ -3,16 +3,20 @@ import { Router, type Request, type Response } from 'express'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
 import { apiLimiter, authMiddleware } from '@/middleware'
+import { sendEmailTest } from '@/services/sendMail'
 
 export const routerMessage = Router()
 
-routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
+// routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
+routerMessage.post('/', async (req: Request, res: Response) => {
   try {
     // await verifyHeaderToken(request)
     const params: MessagesPropierties = req.body
     const newMessage = await messageModel.create(params)
 
     getSocket().emit('newMessage', newMessage)
+
+    await sendEmailTest(params.email)
 
     res.status(200).send(newMessage)
   } catch (error) {
