@@ -1,9 +1,13 @@
-import type { JobsCreateProps } from '@/utils/interfaces';
-import { apiLimiter, authMiddleware } from '@/middleware';
-import { jobsModel } from '@/models/jobs';
-import { createApplicationJob, createNewJobValidation } from '@/utils/validations';
-import { Router, type Request, type Response } from 'express';
-import { jobApplicationModel } from '@/models/job_applications';
+import type { JobsCreateProps, JobsUpdateProps } from '@/utils/interfaces'
+import { apiLimiter, authMiddleware } from '@/middleware'
+import { jobsModel } from '@/models/jobs'
+import {
+  createApplicationJob,
+  createNewJobValidation,
+  updateJobValidation
+} from '@/utils/validations'
+import { Router, type Request, type Response } from 'express'
+import { jobApplicationModel } from '@/models/job_applications'
 
 export const routerJobs = Router()
 
@@ -32,6 +36,37 @@ routerJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
     })
 
     res.send(newApplication)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+routerJobs.put('/', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const data: JobsUpdateProps = req.body
+    await updateJobValidation.parse(data)
+
+    const jobUpdated = await jobsModel.updateOne(
+      { _id: data.jobId },
+      {
+        description: data.description,
+        image: data.image,
+        tags: data.tags,
+        title: data.title
+      }
+    )
+
+    res.send(jobUpdated)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const active = Boolean(req.query.active === 'true')
+    const jobs = await jobsModel.find({ active }).sort({ createdAt: -1 })
+    res.send(jobs)
   } catch (error) {
     res.status(500).send(String(error))
   }

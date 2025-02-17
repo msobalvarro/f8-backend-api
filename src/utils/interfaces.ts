@@ -98,6 +98,10 @@ export interface JobsPropierties {
   active: boolean
 }
 
+export interface JobsUpdateProps extends JobsPropierties {
+  jobId: string
+}
+
 export interface JobsCreateProps {
   title: string
   description: string

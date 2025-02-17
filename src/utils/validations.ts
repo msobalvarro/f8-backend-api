@@ -84,6 +84,12 @@ export const createNewJobValidation = z.object({
   description: z.string({ message: 'description is required' }),
 })
 
+export const updateJobValidation = z.object({
+  jobId: z.string({ message: 'job id is required' }),
+  title: z.string({ message: 'title is required' }),
+  description: z.string({ message: 'description is required' }),
+})
+
 export const createApplicationJob = z.object({
   fullName: z.string({ message: 'full name is required' }),
   email: z.string({ message: 'email is required' }),
