@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { JobsPropierties } from './interfaces'
 
 export const createAndUpdateProductValidation = z.object({
   name: z.string({
@@ -76,4 +77,9 @@ export const updateUserPassword = z.object({
 
 export const deleteUser = z.object({
   id: z.string({ message: 'id is required' }),
+})
+
+export const createNewJobValidation = z.object({
+  title: z.string({ message: 'title is required' }),
+  description: z.string({message: 'description is required'}),
 })

@@ -2,7 +2,7 @@ import type { UsersPropierties } from '@/utils/interfaces'
 import { authMiddleware } from '@/middleware'
 import { usersModel } from '@/models/user'
 import { createHash } from '@/utils/jwt'
-import { createUserValidation, deleteUser, updateUserPassword } from '@/utils/validations'
+import { createUserValidation, updateUserPassword } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
 import { Types } from 'mongoose'
 

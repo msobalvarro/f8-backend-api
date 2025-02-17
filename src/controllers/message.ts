@@ -7,8 +7,7 @@ import { sendEmailTest } from '@/services/sendMail'
 
 export const routerMessage = Router()
 
-// routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
-routerMessage.post('/', async (req: Request, res: Response) => {
+routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
   try {
     // await verifyHeaderToken(request)
     const params: MessagesPropierties = req.body

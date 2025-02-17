@@ -93,7 +93,22 @@ export interface TokenResponse {
 export interface JobsPropierties {
   title: string
   description: string
-  image?: string
+  image?: string | null
   tags: string[]
   active: boolean
+}
+
+export interface JobsCreateProps {
+  title: string
+  description: string
+  image?: string
+  tags: string[]
+}
+
+export interface JobApplicationPropierties {
+  fullName: string
+  email: string
+  phoneNumber: string
+  cv: string
+  job: JobsPropierties
 }
