@@ -1,8 +1,6 @@
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
-import { fileURLToPath } from 'url'
-import path, { dirname } from 'path'
 import { routerLogin } from './src/controllers/login'
 import { connect } from 'mongoose'
 import { DB, PORT } from './src/utils/constants'
@@ -15,8 +13,6 @@ import { routerImage } from './src/controllers/files'
 import { routerUser } from '@/controllers/user'
 
 const app = express()
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 // Middleware para analizar JSON
 app.use(express.json())

@@ -90,3 +90,10 @@ export interface TokenResponse {
   _id: string
 }
 
+export interface JobsPropierties {
+  title: string
+  description: string
+  image?: string
+  tags: string[]
+  active: boolean
+}

@@ -17,7 +17,8 @@ const transporter = nodemailer.createTransport(configutation as nodemailer.Trans
 export async function sendEmailTest(email: string): Promise<void> {
   // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: '"F8 Technologies" <hola@8technologies.com>',
+    from: 'hola@8technologies.com',
+    // from: '"F8 Technologies" <hola@8technologies.com>',
     to: email,
     subject: 'Hello ✔',
     text: 'Hello world?',
