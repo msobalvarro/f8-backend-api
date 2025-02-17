@@ -81,5 +81,13 @@ export const deleteUser = z.object({
 
 export const createNewJobValidation = z.object({
   title: z.string({ message: 'title is required' }),
-  description: z.string({message: 'description is required'}),
+  description: z.string({ message: 'description is required' }),
+})
+
+export const createApplicationJob = z.object({
+  fullName: z.string({ message: 'full name is required' }),
+  email: z.string({ message: 'email is required' }),
+  phoneNumber: z.string({ message: 'phone number is required' }),
+  cv: z.string({ message: 'cv is required' }),
+  jobId: z.string({ message: 'job id is required' }),
 })

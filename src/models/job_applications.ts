@@ -7,6 +7,7 @@ const jobApplications = new Schema<JobApplicationPropierties>(
     email: String,
     fullName: String,
     phoneNumber: String,
+    archived: { type: Boolean, required: false, default: false },
     job: { type: Types.ObjectId, ref: 'jobs' },
   },
   {

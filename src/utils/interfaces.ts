@@ -110,5 +110,14 @@ export interface JobApplicationPropierties {
   email: string
   phoneNumber: string
   cv: string
+  archived: boolean
   job: JobsPropierties
 }
+
+export interface JobApplicationProps {
+  fullName: string
+  email: string
+  phoneNumber: string
+  cv: string
+  jobId: string
+} 
