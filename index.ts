@@ -25,7 +25,7 @@ connect(DB).then(() => {
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)
-  app.use('/images', routerImage)
+  app.use('/files', routerImage)
   app.use('/user', routerUser)
   app.use('/jobs', routerJobs)
 
