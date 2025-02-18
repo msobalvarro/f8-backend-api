@@ -59,3 +59,15 @@ routerImage.get('/:imageName', async (req: Request, res: Response) => {
     res.status(500).send(String(error))
   }
 })
+
+routerImage.get('/document/:filename', async (req: Request, res: Response) => {
+  const filePath = resolve(`${uploadDir}/${req.params.filename}`)
+
+  try {
+    const fs = await import('fs/promises')
+    await fs.access(filePath)
+    res.header('Content-Type', 'application/pdf').sendFile(filePath)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})

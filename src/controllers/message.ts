@@ -27,9 +27,7 @@ routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
 routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const archived = Boolean(req.query.archived === 'true')
-
     const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
-
     res.status(200).send(messages)
   } catch (error) {
     res.status(500).send(String(error))
