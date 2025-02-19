@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import type { JobsPropierties } from './interfaces'
 
 export const createAndUpdateProductValidation = z.object({
   name: z.string({
@@ -82,6 +81,8 @@ export const deleteUser = z.object({
 export const createNewJobValidation = z.object({
   title: z.string({ message: 'title is required' }),
   description: z.string({ message: 'description is required' }),
+  location: z.string({ message: 'location is required' }),
+  tags: z.array(z.string(), { message: 'tags is required' }).min(0),
 })
 
 export const updateJobValidation = z.object({

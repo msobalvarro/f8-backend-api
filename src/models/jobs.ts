@@ -5,6 +5,7 @@ export const jobs = new Schema<JobsPropierties>(
   {
     active: { type: Boolean, required: false, default: true },
     description: String,
+    location: String,
     image: { required: false, type: String },
     tags: [String],
     title: String

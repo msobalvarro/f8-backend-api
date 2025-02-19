@@ -92,6 +92,7 @@ export interface TokenResponse {
 
 export interface JobsPropierties {
   title: string
+  location: string
   description: string
   image?: string | null
   tags: string[]
@@ -107,6 +108,7 @@ export interface JobsCreateProps {
   description: string
   image?: string
   tags: string[]
+  location: string
 }
 
 export interface JobApplicationPropierties {
