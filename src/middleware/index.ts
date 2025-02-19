@@ -26,9 +26,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 }
 
 export const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 3, // Límite de 100 peticiones por IP en el tiempo definido
+  windowMs: 15 * 60 * 1000,
+  max: 3,
   message: 'Demasiadas solicitudes desde esta IP, por favor intenta de nuevo más tarde.',
-  standardHeaders: true, // Enviar información de límite en los encabezados `RateLimit-*`
-  legacyHeaders: false, // Desactivar los encabezados `X-RateLimit-*`
+  standardHeaders: true,
+  legacyHeaders: false,
 })

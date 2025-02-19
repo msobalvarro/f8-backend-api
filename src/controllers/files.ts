@@ -5,7 +5,7 @@ import fs from 'fs'
 import { Router, type Request, type Response } from 'express'
 import { fileURLToPath } from 'url'
 import { PUBLIC_FOLDER } from '@/utils/constants'
-import { authMiddleware } from '@/middleware'
+import { apiLimiter, authMiddleware } from '@/middleware'
 
 dotenv.config()
 
@@ -36,6 +36,18 @@ const upload = multer({
 })
 
 routerImage.post('/', authMiddleware, upload.single('file'), (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      res.status(400).send('No se ha subido ningún archivo.')
+    }
+
+    res.status(200).send({ fileName: req.file?.filename })
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+routerImage.post('/public', apiLimiter, upload.single('file'), (req: Request, res: Response) => {
   try {
     if (!req.file) {
       res.status(400).send('No se ha subido ningún archivo.')
