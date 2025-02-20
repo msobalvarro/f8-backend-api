@@ -4,13 +4,15 @@ import { jobsModel } from '@/models/jobs'
 import {
   createApplicationJob,
   createNewJobValidation,
-  updateJobValidation
+  updateJobValidation,
+  updateStatusJobValidation
 } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
 import { jobApplicationModel } from '@/models/job_applications'
 
 export const routerJobs = Router()
 
+// Create a new job
 routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     // type TypeNewJobProps = z.infer<typeof createNewJobValidation>
@@ -24,6 +26,7 @@ routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
   }
 })
 
+// Apply for a job
 routerJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
   try {
     const data = createApplicationJob.parse(req.body)
@@ -51,6 +54,7 @@ routerJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
   }
 })
 
+// Update a job
 routerJobs.put('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const data: JobsUpdateProps = req.body
@@ -73,6 +77,7 @@ routerJobs.put('/', authMiddleware, async (req: Request, res: Response) => {
   }
 })
 
+// Get all jobs for admin app
 routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const active = Boolean(req.query.active === 'true')
@@ -83,6 +88,7 @@ routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
   }
 })
 
+// Get all jobs for websites
 routerJobs.get('/all', async (req: Request, res: Response) => {
   try {
     const jobs = await jobsModel.find({ active: true }).sort({ createdAt: -1 })
@@ -92,6 +98,7 @@ routerJobs.get('/all', async (req: Request, res: Response) => {
   }
 })
 
+// delete job by id
 routerJobs.delete('/:jobId', authMiddleware, async (req: Request, res: Response) => {
   try {
     const data = req.params
@@ -104,6 +111,7 @@ routerJobs.delete('/:jobId', authMiddleware, async (req: Request, res: Response)
   }
 })
 
+// delete application job by id
 routerJobs.delete('/applicationJob/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const data = req.params
@@ -116,11 +124,24 @@ routerJobs.delete('/applicationJob/:id', authMiddleware, async (req: Request, re
   }
 })
 
+// Get all applications
 routerJobs.get('/applications', authMiddleware, async (req: Request, res: Response) => {
   try {
     const applicationDeleted = await jobApplicationModel.find().sort({ createdAt: -1 }).populate('job')
 
     res.send(applicationDeleted)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+// update state job (active/disabled)
+routerJobs.post('/status', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { active, jobId } = updateStatusJobValidation.parse(req.body)
+    const job = await jobsModel.updateOne({ _id: jobId }, { active })
+
+    res.send(job)
   } catch (error) {
     res.status(500).send(String(error))
   }

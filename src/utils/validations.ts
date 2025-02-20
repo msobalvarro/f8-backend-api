@@ -98,3 +98,8 @@ export const createApplicationJob = z.object({
   cv: z.string({ message: 'cv is required' }),
   jobId: z.string({ message: 'job id is required' }),
 })
+
+export const updateStatusJobValidation = z.object({
+  jobId: z.string({ message: 'job id is required' }),
+  active: z.boolean({ message: 'status active is required' }),
+})
