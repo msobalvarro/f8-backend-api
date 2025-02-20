@@ -31,6 +31,15 @@ routerJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
     const job = await jobsModel.findById(data.jobId)
     if (!job) throw new Error('job not found')
 
+    const applicationExists = await jobApplicationModel.findOne({
+      job: job._id,
+      email: data.email
+    })
+
+    if (applicationExists) {
+      throw new Error('Application already exists')
+    }
+
     const newApplication = await jobApplicationModel.create({
       ...data,
       job
