@@ -12,6 +12,7 @@ import { routerService } from './src/controllers/services'
 import { routerImage } from './src/controllers/files'
 import { routerUser } from '@/controllers/user'
 import { routerJobs } from '@/controllers/jobs'
+import { routerApplicationJobs } from '@/controllers/applicationJob'
 
 const app = express()
 
@@ -28,6 +29,7 @@ connect(DB).then(() => {
   app.use('/files', routerImage)
   app.use('/user', routerUser)
   app.use('/jobs', routerJobs)
+  app.use('/applicationJobs', routerApplicationJobs)
 
   const server = http.createServer(app)
   const io = initializeSocket(server)

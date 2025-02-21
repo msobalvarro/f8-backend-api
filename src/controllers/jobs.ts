@@ -1,13 +1,10 @@
-import type { JobsCreateProps, JobsUpdateProps } from '@/utils/interfaces'
-import { apiLimiter, authMiddleware } from '@/middleware'
+import {authMiddleware } from '@/middleware'
 import { jobsModel } from '@/models/jobs'
 import {
-  createApplicationJob,
   createAndUpdateJobValidation,
   updateStatusJobValidation
 } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
-import { jobApplicationModel } from '@/models/job_applications'
 
 export const routerJobs = Router()
 
@@ -31,34 +28,6 @@ routerJobs.put('/:id', authMiddleware, async (req: Request, res: Response) => {
     const jobUpdated = await jobsModel.updateOne({ _id: req.params.id }, data)
 
     res.send(jobUpdated)
-  } catch (error) {
-    res.status(500).send(String(error))
-  }
-})
-
-// Apply for a job
-routerJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
-  try {
-    const data = createApplicationJob.parse(req.body)
-
-    const job = await jobsModel.findById(data.jobId)
-    if (!job) throw new Error('job not found')
-
-    const applicationExists = await jobApplicationModel.findOne({
-      job: job._id,
-      email: data.email
-    })
-
-    if (applicationExists) {
-      throw new Error('Application already exists')
-    }
-
-    const newApplication = await jobApplicationModel.create({
-      ...data,
-      job
-    })
-
-    res.send(newApplication)
   } catch (error) {
     res.status(500).send(String(error))
   }
@@ -106,30 +75,6 @@ routerJobs.delete('/:jobId', authMiddleware, async (req: Request, res: Response)
     const jobDeleted = await jobsModel.deleteOne({ _id: data.jobId })
 
     res.send(jobDeleted)
-  } catch (error) {
-    res.status(500).send(String(error))
-  }
-})
-
-// delete application job by id
-routerJobs.delete('/applicationJob/:id', authMiddleware, async (req: Request, res: Response) => {
-  try {
-    const data = req.params
-    if (!req.params.id) throw new Error('jobId is required')
-    const applicationDeleted = await jobApplicationModel.deleteOne({ _id: req.params.id })
-
-    res.send(applicationDeleted)
-  } catch (error) {
-    res.status(500).send(String(error))
-  }
-})
-
-// Get all applications
-routerJobs.get('/applications', authMiddleware, async (req: Request, res: Response) => {
-  try {
-    const applicationDeleted = await jobApplicationModel.find().sort({ createdAt: -1 }).populate('job')
-
-    res.send(applicationDeleted)
   } catch (error) {
     res.status(500).send(String(error))
   }
