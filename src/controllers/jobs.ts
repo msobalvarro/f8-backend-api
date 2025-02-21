@@ -3,8 +3,7 @@ import { apiLimiter, authMiddleware } from '@/middleware'
 import { jobsModel } from '@/models/jobs'
 import {
   createApplicationJob,
-  createNewJobValidation,
-  updateJobValidation,
+  createAndUpdateJobValidation,
   updateStatusJobValidation
 } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
@@ -15,12 +14,23 @@ export const routerJobs = Router()
 // Create a new job
 routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
-    // type TypeNewJobProps = z.infer<typeof createNewJobValidation>
-    const data: JobsCreateProps = req.body
-    await createNewJobValidation.parse(data)
+    const data = await createAndUpdateJobValidation.parse(req.body)
 
     const newJob = await jobsModel.create(data)
     res.send(newJob)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+// Update a job by id
+routerJobs.put('/:id', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const data = await createAndUpdateJobValidation.parse(req.body)
+
+    const jobUpdated = await jobsModel.updateOne({ _id: req.params.id }, data)
+
+    res.send(jobUpdated)
   } catch (error) {
     res.status(500).send(String(error))
   }
@@ -54,35 +64,25 @@ routerJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
   }
 })
 
-// Update a job
-routerJobs.put('/', authMiddleware, async (req: Request, res: Response) => {
-  try {
-    const data: JobsUpdateProps = req.body
-    await updateJobValidation.parse(data)
-
-    const jobUpdated = await jobsModel.updateOne(
-      { _id: data.jobId },
-      {
-        description: data.description,
-        image: data.image,
-        tags: data.tags,
-        location: data.location,
-        title: data.title
-      }
-    )
-
-    res.send(jobUpdated)
-  } catch (error) {
-    res.status(500).send(String(error))
-  }
-})
-
 // Get all jobs for admin app
 routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const active = Boolean(req.query.active === 'true')
     const jobs = await jobsModel.find({ active }).sort({ createdAt: -1 })
     res.send(jobs)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+// get specific job by id
+routerJobs.get('/:jobId', async (req: Request, res: Response) => {
+  try {
+    const data = req.params
+    if (!data.jobId) throw new Error('jobId is required')
+    const job = await jobsModel.findById(data.jobId)
+
+    res.send(job)
   } catch (error) {
     res.status(500).send(String(error))
   }
@@ -136,7 +136,7 @@ routerJobs.get('/applications', authMiddleware, async (req: Request, res: Respon
 })
 
 // update state job (active/disabled)
-routerJobs.post('/status', authMiddleware, async (req: Request, res: Response) => {
+routerJobs.put('/status', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { active, jobId } = updateStatusJobValidation.parse(req.body)
     const job = await jobsModel.updateOne({ _id: jobId }, { active })

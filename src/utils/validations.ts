@@ -78,17 +78,12 @@ export const deleteUser = z.object({
   id: z.string({ message: 'id is required' }),
 })
 
-export const createNewJobValidation = z.object({
+export const createAndUpdateJobValidation = z.object({
   title: z.string({ message: 'title is required' }),
   description: z.string({ message: 'description is required' }),
   location: z.string({ message: 'location is required' }),
+  image: z.string({ message: 'image is required' }).nullable(),
   tags: z.array(z.string(), { message: 'tags is required' }).min(0),
-})
-
-export const updateJobValidation = z.object({
-  jobId: z.string({ message: 'job id is required' }),
-  title: z.string({ message: 'title is required' }),
-  description: z.string({ message: 'description is required' }),
 })
 
 export const createApplicationJob = z.object({
