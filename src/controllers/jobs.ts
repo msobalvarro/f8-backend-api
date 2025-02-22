@@ -22,6 +22,19 @@ routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
   }
 })
 
+// update state job (active/disabled)
+routerJobs.put('/status', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    console.log(req.body)
+    const { active, jobId } = updateStatusJobValidation.parse(req.body)
+    const job = await jobsModel.updateOne({ _id: jobId }, { active })
+
+    res.send(job)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
 // Update a job by id
 routerJobs.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
@@ -53,7 +66,6 @@ routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
     res.status(500).send(String(error))
   }
 })
-
 
 // Get all jobs for websites
 routerJobs.get('/all', async (req: Request, res: Response) => {
@@ -87,18 +99,6 @@ routerJobs.delete('/:jobId', authMiddleware, async (req: Request, res: Response)
     const jobDeleted = await jobsModel.deleteOne({ _id: data.jobId })
 
     res.send(jobDeleted)
-  } catch (error) {
-    res.status(500).send(String(error))
-  }
-})
-
-// update state job (active/disabled)
-routerJobs.put('/status', authMiddleware, async (req: Request, res: Response) => {
-  try {
-    const { active, jobId } = updateStatusJobValidation.parse(req.body)
-    const job = await jobsModel.updateOne({ _id: jobId }, { active })
-
-    res.send(job)
   } catch (error) {
     res.status(500).send(String(error))
   }
