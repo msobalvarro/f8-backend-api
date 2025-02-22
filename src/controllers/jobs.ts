@@ -1,5 +1,7 @@
-import {authMiddleware } from '@/middleware'
+import { authMiddleware } from '@/middleware'
+import { jobApplicationModel } from '@/models/job_applications'
 import { jobsModel } from '@/models/jobs'
+import type { JobsWithApplicationsCountResponse } from '@/utils/interfaces'
 import {
   createAndUpdateJobValidation,
   updateStatusJobValidation
@@ -38,7 +40,15 @@ routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const active = Boolean(req.query.active === 'true')
     const jobs = await jobsModel.find({ active }).sort({ createdAt: -1 })
-    res.send(jobs)
+
+    const response: JobsWithApplicationsCountResponse[] = []
+
+    for (const job of jobs) {
+      const applicationsCount = await jobApplicationModel.countDocuments({ job: job._id })
+      response.push({ ...job.toObject(), applicationsCount })
+    }
+
+    res.send(response)
   } catch (error) {
     res.status(500).send(String(error))
   }

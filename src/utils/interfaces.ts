@@ -99,6 +99,10 @@ export interface JobsPropierties {
   active: boolean
 }
 
+export interface JobsWithApplicationsCountResponse extends JobsPropierties { 
+  applicationsCount: number
+}
+
 export interface JobsUpdateProps extends JobsPropierties {
   jobId: string
 }

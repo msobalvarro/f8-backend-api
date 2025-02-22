@@ -1,4 +1,3 @@
-import type { JobsCreateProps, JobsUpdateProps } from '@/utils/interfaces'
 import { apiLimiter, authMiddleware } from '@/middleware'
 import { jobsModel } from '@/models/jobs'
 import { createApplicationJob } from '@/utils/validations'
