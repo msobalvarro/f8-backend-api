@@ -3,12 +3,13 @@ import { jobsModel } from '@/models/jobs'
 import { createApplicationJob } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
 import { jobApplicationModel } from '@/models/job_applications'
+import { getSocket } from '@/socket'
 
 export const routerApplicationJobs = Router()
 
 
 // Apply for a job
-routerApplicationJobs.post('/apply', apiLimiter, async (req: Request, res: Response) => {
+routerApplicationJobs.post('/apply',  async (req: Request, res: Response) => {
   try {
     const data = createApplicationJob.parse(req.body)
 
@@ -27,6 +28,11 @@ routerApplicationJobs.post('/apply', apiLimiter, async (req: Request, res: Respo
     const newApplication = await jobApplicationModel.create({
       ...data,
       job
+    })
+
+    getSocket().emit('newApplication', {
+      name: data.fullName,
+      jobTitle: job.title
     })
 
     res.send(newApplication)
@@ -48,6 +54,22 @@ routerApplicationJobs.delete('/:id', authMiddleware, async (req: Request, res: R
   }
 })
 
+
+// Get all applications for a job by id
+routerApplicationJobs.get('/job/:id', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const applications = await jobApplicationModel
+      .find({ job: { _id: req.params.id } })
+      .sort({ createdAt: -1 })
+      .select('-job')
+
+    res.send(applications)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
+
 // Get all applications
 routerApplicationJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
@@ -60,15 +82,12 @@ routerApplicationJobs.get('/', authMiddleware, async (req: Request, res: Respons
   }
 })
 
-// Get all applications for a job by id
-routerApplicationJobs.get('/job/:id', authMiddleware, async (req: Request, res: Response) => {
+// get application detail by id
+routerApplicationJobs.get('/detail/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const applications = await jobApplicationModel
-      .find({ job: { _id: req.params.id } })
-      .sort({ createdAt: -1 })
-      .select('-job')
+    const application = await jobApplicationModel.findById(req.params.id).populate('job')
 
-    res.send(applications)
+    res.send(application)
   } catch (error) {
     res.status(500).send(String(error))
   }
