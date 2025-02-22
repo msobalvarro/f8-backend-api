@@ -54,24 +54,26 @@ routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
   }
 })
 
+
+// Get all jobs for websites
+routerJobs.get('/all', async (req: Request, res: Response) => {
+  try {
+    const jobs = await jobsModel.find({ active: true }).sort({ createdAt: -1 })
+    // const jobs = await jobsModel.find()
+    res.send(jobs)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
+
 // get specific job by id
-routerJobs.get('/:jobId', async (req: Request, res: Response) => {
+routerJobs.get('/detail/:jobId', async (req: Request, res: Response) => {
   try {
     const data = req.params
     if (!data.jobId) throw new Error('jobId is required')
     const job = await jobsModel.findById(data.jobId)
 
     res.send(job)
-  } catch (error) {
-    res.status(500).send(String(error))
-  }
-})
-
-// Get all jobs for websites
-routerJobs.get('/all', async (req: Request, res: Response) => {
-  try {
-    const jobs = await jobsModel.find({ active: true }).sort({ createdAt: -1 })
-    res.send(jobs)
   } catch (error) {
     res.status(500).send(String(error))
   }

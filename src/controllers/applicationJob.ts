@@ -59,3 +59,17 @@ routerApplicationJobs.get('/', authMiddleware, async (req: Request, res: Respons
     res.status(500).send(String(error))
   }
 })
+
+// Get all applications for a job by id
+routerApplicationJobs.get('/job/:id', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const applications = await jobApplicationModel
+      .find({ job: { _id: req.params.id } })
+      .sort({ createdAt: -1 })
+      .select('-job')
+
+    res.send(applications)
+  } catch (error) {
+    res.status(500).send(String(error))
+  }
+})
