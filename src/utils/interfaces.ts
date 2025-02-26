@@ -86,3 +86,48 @@ export interface ServiceResponse extends ServicesPropierties {
   _id: Types.ObjectId
 }
 
+export interface TokenResponse {
+  _id: string
+}
+
+export interface JobsPropierties {
+  title: string
+  location: string
+  description: string
+  image?: string | null
+  tags: string[]
+  active: boolean
+}
+
+export interface JobsWithApplicationsCountResponse extends JobsPropierties { 
+  applicationsCount: number
+}
+
+export interface JobsUpdateProps extends JobsPropierties {
+  jobId: string
+}
+
+export interface JobsCreateProps {
+  title: string
+  description: string
+  image?: string
+  tags: string[]
+  location: string
+}
+
+export interface JobApplicationPropierties {
+  fullName: string
+  email: string
+  phoneNumber: string
+  cv: string
+  archived: boolean
+  job: JobsPropierties
+}
+
+export interface JobApplicationProps {
+  fullName: string
+  email: string
+  phoneNumber: string
+  cv: string
+  jobId: string
+} 

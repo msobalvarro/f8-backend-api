@@ -1,9 +1,9 @@
-
-import { Router, type Request, type Response } from 'express'
 import type { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces'
+import { Router, type Request, type Response } from 'express'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
 import { apiLimiter, authMiddleware } from '@/middleware'
+import { sendEmailTest } from '@/services/sendMail'
 
 export const routerMessage = Router()
 
@@ -15,6 +15,8 @@ routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
 
     getSocket().emit('newMessage', newMessage)
 
+    await sendEmailTest(params.email)
+
     res.status(200).send(newMessage)
   } catch (error) {
     console.log(error)
@@ -25,9 +27,7 @@ routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
 routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const archived = Boolean(req.query.archived === 'true')
-
     const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
-
     res.status(200).send(messages)
   } catch (error) {
     res.status(500).send(String(error))

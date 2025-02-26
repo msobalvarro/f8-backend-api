@@ -69,3 +69,32 @@ export const createAndUpdateServiceValidation = z.object({
   ),
   pinned: z.boolean({ message: 'pinned is required' }),
 })
+
+export const updateUserPassword = z.object({
+  password: z.string({ message: 'password is required' }),
+})
+
+export const deleteUser = z.object({
+  id: z.string({ message: 'id is required' }),
+})
+
+export const createAndUpdateJobValidation = z.object({
+  title: z.string({ message: 'title is required' }),
+  description: z.string({ message: 'description is required' }),
+  location: z.string({ message: 'location is required' }),
+  image: z.string({ message: 'image is required' }).nullable(),
+  tags: z.array(z.string(), { message: 'tags is required' }).min(0),
+})
+
+export const createApplicationJob = z.object({
+  fullName: z.string({ message: 'full name is required' }),
+  email: z.string({ message: 'email is required' }),
+  phoneNumber: z.string({ message: 'phone number is required' }),
+  cv: z.string({ message: 'cv is required' }),
+  jobId: z.string({ message: 'job id is required' }),
+})
+
+export const updateStatusJobValidation = z.object({
+  jobId: z.string({ message: 'job id is required' }),
+  active: z.boolean({ message: 'status active is required' }),
+})

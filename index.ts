@@ -1,8 +1,6 @@
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
-import { fileURLToPath } from 'url'
-import path, { dirname } from 'path'
 import { routerLogin } from './src/controllers/login'
 import { connect } from 'mongoose'
 import { DB, PORT } from './src/utils/constants'
@@ -12,22 +10,26 @@ import { routerPreference } from './src/controllers/preferences'
 import { routerProducts } from './src/controllers/products'
 import { routerService } from './src/controllers/services'
 import { routerImage } from './src/controllers/files'
+import { routerUser } from '@/controllers/user'
+import { routerJobs } from '@/controllers/jobs'
+import { routerApplicationJobs } from '@/controllers/applicationJob'
 
 const app = express()
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 // Middleware para analizar JSON
 app.use(express.json())
+app.use(cors())
 
 connect(DB).then(() => {
-  app.use(cors({ origin: '*' }))
   app.use('/login', routerLogin)
   app.use('/message', routerMessage)
   app.use('/preferences', routerPreference)
   app.use('/products', routerProducts)
   app.use('/services', routerService)
-  app.use('/images', routerImage)
+  app.use('/files', routerImage)
+  app.use('/user', routerUser)
+  app.use('/jobs', routerJobs)
+  app.use('/applicationJobs', routerApplicationJobs)
 
   const server = http.createServer(app)
   const io = initializeSocket(server)
