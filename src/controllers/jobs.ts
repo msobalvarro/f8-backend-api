@@ -25,7 +25,6 @@ routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
 // update state job (active/disabled)
 routerJobs.put('/status', authMiddleware, async (req: Request, res: Response) => {
   try {
-    console.log(req.body)
     const { active, jobId } = updateStatusJobValidation.parse(req.body)
     const job = await jobsModel.updateOne({ _id: jobId }, { active })
 

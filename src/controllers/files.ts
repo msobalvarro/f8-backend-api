@@ -72,14 +72,14 @@ routerImage.get('/images/:imageName', async (req: Request, res: Response) => {
   }
 })
 
-routerImage.get('/document/:filename', async (req: Request, res: Response) => {
+routerImage.get('/document/:filename', authMiddleware, async (req: Request, res: Response) => {
   const filePath = resolve(`${uploadDir}/${req.params.filename}`)
 
   try {
     const fs = await import('fs/promises')
     await fs.access(filePath)
     res.header('Content-Type', 'application/pdf').sendFile(filePath)
-  } catch (error) { 
+  } catch (error) {
     res.status(500).send(String(error))
   }
 })
