@@ -7,6 +7,7 @@ import { Types } from 'mongoose'
 import { createAndUpdateProductValidation } from '@/utils/validations'
 import { Router, type Response, type Request } from 'express'
 import { authMiddleware } from '@/middleware'
+import { responseError } from '@/utils/errors'
 
 export const routerProducts = Router()
 
@@ -29,7 +30,7 @@ routerProducts.get('/', async (req: Request, res: Response) => {
     const products: ProductsPropierties[] = await productModel.find().sort({ createdAt: -1 })
     res.status(200).send(products)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -41,7 +42,7 @@ routerProducts.post('/', authMiddleware, async (req: Request, res: Response) => 
     const newProduct = await productModel.create(params)
     res.status(200).send(newProduct)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -53,7 +54,7 @@ routerProducts.delete('/', authMiddleware, async (req: Request, res: Response) =
     const deleted = await productModel.deleteOne({ _id: id })
     res.status(200).send(deleted)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -75,6 +76,6 @@ routerProducts.put('/', authMiddleware, async (req: Request, res: Response) => {
     )
     res.status(200).send(productUpdated)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })

@@ -6,6 +6,7 @@ import { Router, type Request, type Response } from 'express'
 import { fileURLToPath } from 'url'
 import { PUBLIC_FOLDER } from '@/utils/constants'
 import { apiLimiterDefault, authMiddleware } from '@/middleware'
+import { responseError } from '@/utils/errors'
 
 dotenv.config()
 
@@ -43,7 +44,7 @@ routerImage.post('/', authMiddleware, upload.single('file'), (req: Request, res:
 
     res.status(200).send({ fileName: req.file?.filename })
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -55,7 +56,7 @@ routerImage.post('/public', apiLimiterDefault, upload.single('file'), (req: Requ
 
     res.status(200).send({ fileName: req.file?.filename })
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -68,7 +69,7 @@ routerImage.get('/images/:imageName', async (req: Request, res: Response) => {
     await fs.access(imagePath)
     res.header('Content-Type', 'image/jpeg').sendFile(imagePath)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -80,6 +81,6 @@ routerImage.get('/document/:filename', authMiddleware, async (req: Request, res:
     await fs.access(filePath)
     res.header('Content-Type', 'application/pdf').sendFile(filePath)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })

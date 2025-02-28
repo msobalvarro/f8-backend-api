@@ -2,6 +2,7 @@ import { authentication } from '@/services/authentication'
 import { Router } from 'express'
 import type { Request, Response } from 'express'
 import type { LoginProps } from '@/utils/interfaces'
+import { responseError } from '@/utils/errors'
 
 export const routerLogin = Router()
 
@@ -12,7 +13,6 @@ routerLogin.post('/', async (req: Request, res: Response) => {
     const userAuth = await authentication(params.username, params.password)
     res.send(userAuth)
   } catch (error) {
-    console.log(error)
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })

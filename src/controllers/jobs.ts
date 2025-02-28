@@ -1,6 +1,7 @@
 import { authMiddleware } from '@/middleware'
 import { jobApplicationModel } from '@/models/job_applications'
 import { jobsModel } from '@/models/jobs'
+import { responseError } from '@/utils/errors'
 import type { JobsWithApplicationsCountResponse } from '@/utils/interfaces'
 import {
   createAndUpdateJobValidation,
@@ -18,7 +19,7 @@ routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
     const newJob = await jobsModel.create(data)
     res.send(newJob)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -30,7 +31,7 @@ routerJobs.put('/status', authMiddleware, async (req: Request, res: Response) =>
 
     res.send(job)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -43,7 +44,7 @@ routerJobs.put('/:id', authMiddleware, async (req: Request, res: Response) => {
 
     res.send(jobUpdated)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -62,7 +63,7 @@ routerJobs.get('/', authMiddleware, async (req: Request, res: Response) => {
 
     res.send(response)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -73,7 +74,7 @@ routerJobs.get('/all', async (req: Request, res: Response) => {
     // const jobs = await jobsModel.find()
     res.send(jobs)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -86,7 +87,7 @@ routerJobs.get('/detail/:jobId', async (req: Request, res: Response) => {
 
     res.send(job)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -99,6 +100,6 @@ routerJobs.delete('/:jobId', authMiddleware, async (req: Request, res: Response)
 
     res.send(jobDeleted)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })

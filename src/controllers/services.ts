@@ -8,6 +8,7 @@ import { createAndUpdateServiceValidation } from '@/utils/validations'
 import { servicesModel } from '@/models/service'
 import { Router, type Request, type Response } from 'express'
 import { authMiddleware } from '@/middleware'
+import { responseError } from '@/utils/errors'
 
 export const routerService = Router()
 
@@ -30,7 +31,7 @@ routerService.get('/', async (req: Request, res: Response) => {
     const services: ServiceResponse[] = await servicesModel.find().sort({ createdAt: -1 })
     res.status(200).send(services)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -42,7 +43,7 @@ routerService.post('/', authMiddleware, async (req: Request, res: Response) => {
     const newService = await servicesModel.create(params)
     res.status(200).send(newService)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -54,7 +55,7 @@ routerService.delete('/', authMiddleware, async (req: Request, res: Response) =>
     const deleted = await servicesModel.deleteOne({ _id: id })
     res.status(200).send(deleted)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -67,7 +68,7 @@ routerService.put('/', authMiddleware, async (req: Request, res: Response) => {
     const serviceUpdated = await servicesModel.updateOne({ _id: params.id }, params)
     res.status(200).send(serviceUpdated)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 

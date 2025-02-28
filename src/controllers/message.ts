@@ -4,6 +4,7 @@ import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
 import { apiLimiterDefault, authMiddleware } from '@/middleware'
 import { sendEmailTest } from '@/services/sendMail'
+import { responseError } from '@/utils/errors'
 
 export const routerMessage = Router()
 
@@ -19,8 +20,7 @@ routerMessage.post('/', apiLimiterDefault, async (req: Request, res: Response) =
 
     res.status(200).send(newMessage)
   } catch (error) {
-    console.log(error)
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -30,7 +30,7 @@ routerMessage.get('/', authMiddleware, async (req: Request, res: Response) => {
     const messages = await messageModel.find({ archived }).sort({ createdAt: -1 })
     res.status(200).send(messages)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -48,7 +48,7 @@ routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
 
     res.status(200).send(messageUpdated)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -58,7 +58,7 @@ routerMessage.put('/', authMiddleware, async (req: Request, res: Response) => {
     const deleted = await messageModel.deleteOne({ _id })
     res.status(200).send(deleted)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 

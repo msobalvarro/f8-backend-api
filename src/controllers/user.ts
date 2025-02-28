@@ -5,6 +5,7 @@ import { createHash } from '@/utils/jwt'
 import { createUserValidation, updateUserPassword } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
 import { Types } from 'mongoose'
+import { responseError } from '@/utils/errors'
 
 export const routerUser = Router()
 
@@ -13,7 +14,7 @@ routerUser.get('/', authMiddleware, async (req: Request, res: Response) => {
     const users = await usersModel.find()
     res.status(200).send(users)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -31,7 +32,7 @@ routerUser.post('/', authMiddleware, async (req: Request, res: Response) => {
     })
     res.status(200).send(newUser)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -42,7 +43,7 @@ routerUser.put('/', authMiddleware, async (req: Request, res: Response) => {
     const updatedUser = await usersModel.findByIdAndUpdate(req.user?._id, { password })
     res.send(updatedUser)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -58,6 +59,6 @@ routerUser.delete('/', authMiddleware, async (req: Request, res: Response) => {
     const userDeleted = await usersModel.deleteOne({ _id: id })
     res.send(userDeleted)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })

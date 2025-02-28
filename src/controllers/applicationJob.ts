@@ -4,6 +4,7 @@ import { createApplicationJob } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'
 import { jobApplicationModel } from '@/models/job_applications'
 import { getSocket } from '@/socket'
+import { responseError } from '@/utils/errors'
 
 export const routerApplicationJobs = Router()
 
@@ -37,7 +38,7 @@ routerApplicationJobs.post('/apply',  async (req: Request, res: Response) => {
 
     res.send(newApplication)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -50,7 +51,7 @@ routerApplicationJobs.delete('/:id', authMiddleware, async (req: Request, res: R
 
     res.send(applicationDeleted)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -65,7 +66,7 @@ routerApplicationJobs.get('/job/:id', authMiddleware, async (req: Request, res: 
 
     res.send(applications)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -78,7 +79,7 @@ routerApplicationJobs.get('/', authMiddleware, async (req: Request, res: Respons
 
     res.send(applications)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
 
@@ -89,6 +90,6 @@ routerApplicationJobs.get('/detail/:id', authMiddleware, async (req: Request, re
 
     res.send(application)
   } catch (error) {
-    res.status(500).send(String(error))
+    responseError(res, error)
   }
 })
