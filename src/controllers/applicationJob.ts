@@ -1,4 +1,4 @@
-import { apiLimiter, authMiddleware } from '@/middleware'
+import { apiLimiterDefault, authMiddleware } from '@/middleware'
 import { jobsModel } from '@/models/jobs'
 import { createApplicationJob } from '@/utils/validations'
 import { Router, type Request, type Response } from 'express'

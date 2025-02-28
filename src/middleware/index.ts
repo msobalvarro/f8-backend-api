@@ -25,9 +25,17 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   }
 }
 
-export const apiLimiter = rateLimit({
+export const apiLimiterDefault = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 3,
+  message: 'Demasiadas solicitudes desde esta IP, por favor intenta de nuevo más tarde.',
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+export const apiLimiter = (max: number) => rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max,
   message: 'Demasiadas solicitudes desde esta IP, por favor intenta de nuevo más tarde.',
   standardHeaders: true,
   legacyHeaders: false,

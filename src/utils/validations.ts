@@ -98,3 +98,7 @@ export const updateStatusJobValidation = z.object({
   jobId: z.string({ message: 'job id is required' }),
   active: z.boolean({ message: 'status active is required' }),
 })
+
+export const subscribedMailValidation = z.object({
+  email: z.string({ message: 'mail active is required' }),
+})

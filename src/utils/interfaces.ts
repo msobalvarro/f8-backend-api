@@ -131,3 +131,8 @@ export interface JobApplicationProps {
   cv: string
   jobId: string
 } 
+
+export interface SubscribeMailPropierties {
+  email: string
+  active: boolean
+}

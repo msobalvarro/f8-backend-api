@@ -2,12 +2,12 @@ import type { ArchiveMessageProp, MessagesPropierties } from '@/utils/interfaces
 import { Router, type Request, type Response } from 'express'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
-import { apiLimiter, authMiddleware } from '@/middleware'
+import { apiLimiterDefault, authMiddleware } from '@/middleware'
 import { sendEmailTest } from '@/services/sendMail'
 
 export const routerMessage = Router()
 
-routerMessage.post('/', apiLimiter, async (req: Request, res: Response) => {
+routerMessage.post('/', apiLimiterDefault, async (req: Request, res: Response) => {
   try {
     // await verifyHeaderToken(request)
     const params: MessagesPropierties = req.body
