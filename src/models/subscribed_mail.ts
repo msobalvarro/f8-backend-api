@@ -3,15 +3,16 @@ import { model, Schema } from 'mongoose'
 
 const subscribeMails = new Schema<SubscribeMailPropierties>(
   {
-    email: { type: String, required: true },
+    email: String,
     active: {
+      type: Boolean,
       required: false,
       default: true
-    }
+    },
   },
   {
-    versionKey: false,
     timestamps: true,
+    versionKey: false,
   },
 )
 

@@ -1,6 +1,7 @@
 import { authMiddleware } from '@/middleware'
 import { jobApplicationModel } from '@/models/job_applications'
 import { jobsModel } from '@/models/jobs'
+import { notificationNewJob } from '@/services/sendNotificationNewJob'
 import { responseError } from '@/utils/errors'
 import type { JobsWithApplicationsCountResponse } from '@/utils/interfaces'
 import {
@@ -17,6 +18,9 @@ routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
     const data = await createAndUpdateJobValidation.parse(req.body)
 
     const newJob = await jobsModel.create(data)
+
+    await notificationNewJob(newJob)
+    
     res.send(newJob)
   } catch (error) {
     responseError(res, error)

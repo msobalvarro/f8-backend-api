@@ -1,5 +1,8 @@
 import { HOST_MAIL, PASS_EMAIL, PORT_MAIL, USER_EMAIL } from '@/utils/constants'
+import fs from 'fs'
+import Handlebars from 'handlebars'
 import nodemailer from 'nodemailer'
+import path from 'path'
 
 const transporter = nodemailer.createTransport(<nodemailer.TransportOptions>{
   host: HOST_MAIL,
@@ -11,13 +14,25 @@ const transporter = nodemailer.createTransport(<nodemailer.TransportOptions>{
   },
 })
 
-export async function sendEmailTest(email: string): Promise<void> {
+type SendMailProps = {
+  email: string
+  subject: string
+  templateName: string
+  variables?: object
+}
+
+export async function sendEmail({ email, subject, templateName, variables }: SendMailProps): Promise<void> {
+  const templatePath = path.join(process.cwd(), `src/templates/${templateName}.hbs`)
+  const templateSource = fs.readFileSync(templatePath, 'utf8')
+  const template = Handlebars.compile(templateSource)
+
+  const html = template(variables)
+
   const info = await transporter.sendMail({
-    from: 'hola@8technologies.com',
+    from: USER_EMAIL,
     to: email,
-    subject: 'Hello ✔',
-    text: 'Hello world?',
-    html: '<b>Hello world?</b>',
+    subject,
+    html,
   })
 
   console.log('Message sent: %s', info.messageId)

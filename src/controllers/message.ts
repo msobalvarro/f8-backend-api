@@ -3,20 +3,24 @@ import { Router, type Request, type Response } from 'express'
 import { messageModel } from '@/models/messages'
 import { getSocket } from '@/socket'
 import { apiLimiterDefault, authMiddleware } from '@/middleware'
-import { sendEmailTest } from '@/services/sendMail'
+import { sendEmail } from '@/services/sendMail'
 import { responseError } from '@/utils/errors'
+import { createMessageValidation } from '@/utils/validations'
 
 export const routerMessage = Router()
 
-routerMessage.post('/', apiLimiterDefault, async (req: Request, res: Response) => {
+// routerMessage.post('/', apiLimiterDefault, async (req: Request, res: Response) => {
+routerMessage.post('/', async (req: Request, res: Response) => {
   try {
-    // await verifyHeaderToken(request)
-    const params: MessagesPropierties = req.body
+    const params = createMessageValidation.parse(req.body)
     const newMessage = await messageModel.create(params)
-
     getSocket().emit('newMessage', newMessage)
 
-    await sendEmailTest(params.email)
+    await sendEmail({
+      email: params.email,
+      subject: `Mensaje: ${params.fullName}`,
+      templateName: 'notification_job'
+    })
 
     res.status(200).send(newMessage)
   } catch (error) {

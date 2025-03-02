@@ -10,5 +10,6 @@ export const {
   HOST_MAIL = '',
   PORT_MAIL = 0,
   USER_EMAIL = '',
-  PASS_EMAIL = ''
+  PASS_EMAIL = '',
+  FRONTEND_URL = ''
 } = process.env

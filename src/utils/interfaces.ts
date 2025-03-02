@@ -134,5 +134,5 @@ export interface JobApplicationProps {
 
 export interface SubscribeMailPropierties {
   email: string
-  active: boolean
+  active?: boolean
 }

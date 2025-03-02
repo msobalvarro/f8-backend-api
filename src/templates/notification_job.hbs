@@ -1,11 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Empleos F8</title>
+  <title>F8 Technologies - Nuevo Empleo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F8F8F8 !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #FFF !important;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #00143F !important;
+      color: #FFF !important;
+      text-align: center;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+      color: #000 !important;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 16px;
+      color: #FFF !important;
+      background-color: #0FD8D5 !important;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #00143F !important;
+      color: #FFF !important;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #0FD8D5 !important;
+      text-decoration: none;
+    }
+
+    .text-black {
+      color: #000 !important;
+    }
+
+    .underline {
+      text-decoration: underline !important;
+    }
+
+    img {
+      max-width: 128px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
-  
+  <div class="container">
+    <div class="header">
+      <img src="http://localhost:5173/logo.png" />
+      <p>F8 Technologies - Nuevo Empleo Disponible</p>
+    </div>
+    <div class="content">
+      <h2>{{jobaName}}</h2>
+      <p>¡F8 Technologies ha publicado una nueva oferta de empleo que podría interesarte!</p>
+      <a href="#" class="btn text-black">Ver empleo</a>
+      <a href="#" class="btn" style="background-color: #00143F !important;">Ir a F8 Technologies</a>
+    </div>
+    <div class="footer">
+      <p>Si no deseas recibir más notificaciones, <a class="underline" href="#">dar de baja aquí</a>.</p>
+    </div>
+  </div>
 </body>
+
 </html>

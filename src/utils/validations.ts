@@ -44,10 +44,11 @@ export const updatePreferenceValidation = z.object({
   value: z.string({ message: 'value preference is required' }),
 })
 
-export const createMessage = z.object({
+export const createMessageValidation = z.object({
   fullName: z.string({ message: 'name is required' }),
   phoneNumber: z.string({ message: 'phone number is required' }),
-  message: z.string({ message: 'message is required' }),
+  message: z.string({ message: 'message is required' }).max(512, 'max length message is 512'),
+  company: z.string({ message: 'company is not valid' }).optional(),
   email: z.string({ message: 'email is required' }).email({ message: 'email format is not valid' }),
 })
 
@@ -100,5 +101,6 @@ export const updateStatusJobValidation = z.object({
 })
 
 export const subscribeMailValidation = z.object({
-  email: z.string({ message: 'mail active is required' }),
+  email: z.string({ message: 'mail active is required' }).email({ message: 'email is not valid' }),
 })
+

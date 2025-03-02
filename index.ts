@@ -13,6 +13,7 @@ import { routerImage } from './src/controllers/files'
 import { routerUser } from '@/controllers/user'
 import { routerJobs } from '@/controllers/jobs'
 import { routerApplicationJobs } from '@/controllers/applicationJob'
+import { subscribedMailRouter } from '@/controllers/subscribedMail'
 
 const app = express()
 
@@ -30,6 +31,7 @@ connect(DB).then(() => {
   app.use('/user', routerUser)
   app.use('/jobs', routerJobs)
   app.use('/applicationJobs', routerApplicationJobs)
+  app.use('/notificationJobs', subscribedMailRouter)
 
   const server = http.createServer(app)
   const io = initializeSocket(server)
