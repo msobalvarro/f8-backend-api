@@ -16,11 +16,9 @@ export const routerJobs = Router()
 routerJobs.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const data = await createAndUpdateJobValidation.parse(req.body)
-
     const newJob = await jobsModel.create(data)
-
     await notificationNewJob(newJob)
-    
+
     res.send(newJob)
   } catch (error) {
     responseError(res, error)

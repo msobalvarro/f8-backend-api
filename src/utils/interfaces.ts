@@ -91,6 +91,7 @@ export interface TokenResponse {
 }
 
 export interface JobsPropierties {
+  _id: string
   title: string
   location: string
   description: string

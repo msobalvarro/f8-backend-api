@@ -1,4 +1,4 @@
-import { HOST_MAIL, PASS_EMAIL, PORT_MAIL, USER_EMAIL } from '@/utils/constants'
+import { FRONTEND_URL, HOST_MAIL, PASS_EMAIL, PORT_MAIL, USER_EMAIL } from '@/utils/constants'
 import fs from 'fs'
 import Handlebars from 'handlebars'
 import nodemailer from 'nodemailer'
@@ -26,7 +26,11 @@ export async function sendEmail({ email, subject, templateName, variables }: Sen
   const templateSource = fs.readFileSync(templatePath, 'utf8')
   const template = Handlebars.compile(templateSource)
 
-  const html = template(variables)
+  const html = template({
+    ...variables,
+    siteUrl: FRONTEND_URL,
+    logoUrl: `${FRONTEND_URL}/logo.png`
+  })
 
   const info = await transporter.sendMail({
     from: USER_EMAIL,
