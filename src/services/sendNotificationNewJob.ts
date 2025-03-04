@@ -13,7 +13,8 @@ export const notificationNewJob = async (job: JobsPropierties) => {
       templateName: 'notification_job',
       variables: {
         jobaName: job.description,
-        jobUrl: `${FRONTEND_URL}/jobs/${job._id}`
+        jobUrl: `${FRONTEND_URL}/jobs/${job._id}`,
+        unsubscribeUrl: `${FRONTEND_URL}/unsubscribe/${client._id}`
       }
     })
   }

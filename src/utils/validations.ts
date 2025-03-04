@@ -101,6 +101,10 @@ export const updateStatusJobValidation = z.object({
 })
 
 export const subscribeMailValidation = z.object({
-  email: z.string({ message: 'mail active is required' }).email({ message: 'email is not valid' }),
+  email: z.string({ message: 'email active is required' }).email({ message: 'email is not valid' }),
+})
+
+export const unsubscribeMailValidation = z.object({
+  id: z.string({ message: 'id is required' }),
 })
 
